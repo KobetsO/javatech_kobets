@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Edge Node</title>
+</head>
+<body>
+<h1>Add Edge Node</h1>
+<form action="/nodes" method="post">
+    <p><label>Hostname: <input type="text" name="hostname" required></label></p>
+    <p><label>Architecture: <input type="text" name="architecture" required></label></p>
+    <p><label>CPU Cores: <input type="number" name="cpuCores" required></label></p>
+    <p><label>RAM (GB): <input type="number" name="ramGb" required></label></p>
+    <p><label>Storage (GB): <input type="number" name="storageGb" required></label></p>
+    <p><label>Site: <input type="text" name="site" required></label></p>
+    <p><label>Status:
+        <select name="status">
+            <option value="ONLINE">ONLINE</option>
+            <option value="OFFLINE">OFFLINE</option>
+            <option value="DEGRADED">DEGRADED</option>
+            <option value="MAINTENANCE">MAINTENANCE</option>
+        </select>
+    </label></p>
+    <button type="submit">Add Edge Node</button>
+</form>
+<p><a href="/nodes">Back to list</a></p>
+</body>
+</html>
