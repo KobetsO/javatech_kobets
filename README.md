@@ -2,3 +2,6 @@
 JDK: 25
 Build: Maven
 Git / GitHub
+Lab 02 Jakarta Servlet
+Web Application Structure: web.xml and pom.xml
+Servlets Implemented: HelloServlet, EdgeNodeServlet
