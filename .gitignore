@@ -14,3 +14,8 @@ target/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Local H2 database
+data/
+*.mv.db
+*.trace.db
