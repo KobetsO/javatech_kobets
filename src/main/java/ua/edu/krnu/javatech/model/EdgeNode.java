@@ -1,18 +1,68 @@
 package ua.edu.krnu.javatech.model;
 
-public class EdgeNode {
-    private final Long id;
-    private final String hostname;
-    private final String architecture;
-    private final int cpuCores;
-    private final int ramGb;
-    private final int storageGb;
-    private final NodeStatus status;
-    private final String site;
+import jakarta.persistence.*;
 
-    public EdgeNode(Long id, String hostname, String architecture, int cpuCores,
-                    int ramGb, int storageGb, NodeStatus status, String site) {
-        this.id = id;
+@Entity
+@Table(name = "edge_nodes")
+public class EdgeNode {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 100)
+    private String hostname;
+
+    @Column(nullable = false, length = 50)
+    private String architecture;
+
+    @Column(nullable = false)
+    private int cpuCores;
+
+    @Column(nullable = false)
+    private int ramGb;
+
+    @Column(nullable = false)
+    private int storageGb;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private NodeStatus status;
+
+    @Column(nullable = false, length = 150)
+    private String site;
+
+    protected EdgeNode() {
+        // Required by JPA
+    }
+
+    public EdgeNode(
+            String hostname,
+            String architecture,
+            int cpuCores,
+            int ramGb,
+            int storageGb,
+            NodeStatus status,
+            String site
+    ) {
+        this.hostname = hostname;
+        this.architecture = architecture;
+        this.cpuCores = cpuCores;
+        this.ramGb = ramGb;
+        this.storageGb = storageGb;
+        this.status = status;
+        this.site = site;
+    }
+
+    public void update(
+            String hostname,
+            String architecture,
+            int cpuCores,
+            int ramGb,
+            int storageGb,
+            NodeStatus status,
+            String site
+    ) {
         this.hostname = hostname;
         this.architecture = architecture;
         this.cpuCores = cpuCores;

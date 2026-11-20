@@ -23,7 +23,6 @@ public class Lab01Application {
 
         for (int i = 1; i <= count; i++) {
             result.add(new EdgeNode(
-                    (long) i,
                     "edge-node-" + i,
                     arches[i % arches.length],
                     2 * ((i % 4) + 1), // cpuCores: 2, 4, 6, 8

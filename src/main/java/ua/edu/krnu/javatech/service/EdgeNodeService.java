@@ -1,6 +1,7 @@
 package ua.edu.krnu.javatech.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.edu.krnu.javatech.dto.EdgeNodeRequest;
 import ua.edu.krnu.javatech.model.EdgeNode;
 import ua.edu.krnu.javatech.model.NodeStatus;
@@ -8,32 +9,31 @@ import ua.edu.krnu.javatech.repository.EdgeNodeRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
+@Transactional(readOnly = true)
 public class EdgeNodeService {
     private final EdgeNodeRepository repository;
-    private final AtomicLong idSequence = new AtomicLong(100);
 
-    // Constructor injection
     public EdgeNodeService(EdgeNodeRepository repository) {
         this.repository = repository;
     }
 
     public List<EdgeNode> findAll(NodeStatus status) {
-        return status == null
-                ? repository.findAll()
-                : repository.findByStatus(status);
+        if (status == null) {
+            return repository.findAll();
+        }
+        return repository.findByStatusOrderByIdAsc(status);
     }
 
     public Optional<EdgeNode> findById(Long id) {
         return repository.findById(id);
     }
 
+    @Transactional
     public EdgeNode create(EdgeNodeRequest request) {
         validate(request);
         EdgeNode node = new EdgeNode(
-                idSequence.incrementAndGet(),
                 request.hostname().trim(),
                 request.architecture().trim(),
                 request.cpuCores(),
@@ -45,26 +45,30 @@ public class EdgeNodeService {
         return repository.save(node);
     }
 
+    @Transactional
     public Optional<EdgeNode> update(Long id, EdgeNodeRequest request) {
         validate(request);
-        if (!repository.existsById(id)) {
-            return Optional.empty();
-        }
-        EdgeNode updated = new EdgeNode(
-                id,
-                request.hostname().trim(),
-                request.architecture().trim(),
-                request.cpuCores(),
-                request.ramGb(),
-                request.storageGb(),
-                request.status(),
-                request.site().trim()
-        );
-        return Optional.of(repository.save(updated));
+        return repository.findById(id).map(node -> {
+            node.update(
+                    request.hostname().trim(),
+                    request.architecture().trim(),
+                    request.cpuCores(),
+                    request.ramGb(),
+                    request.storageGb(),
+                    request.status(),
+                    request.site().trim()
+            );
+            return repository.save(node);
+        });
     }
 
+    @Transactional
     public boolean delete(Long id) {
-        return repository.deleteById(id);
+        if (!repository.existsById(id)) {
+            return false;
+        }
+        repository.deleteById(id);
+        return true;
     }
 
     private static void validate(EdgeNodeRequest request) {
