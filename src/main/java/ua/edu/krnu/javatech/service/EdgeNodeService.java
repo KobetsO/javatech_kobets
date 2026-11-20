@@ -6,6 +6,7 @@ import ua.edu.krnu.javatech.dto.EdgeNodeRequest;
 import ua.edu.krnu.javatech.model.EdgeNode;
 import ua.edu.krnu.javatech.model.NodeStatus;
 import ua.edu.krnu.javatech.repository.EdgeNodeRepository;
+import ua.edu.krnu.javatech.repository.ResourceMetricRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,9 +15,11 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class EdgeNodeService {
     private final EdgeNodeRepository repository;
+    private final ResourceMetricRepository metricRepository;
 
-    public EdgeNodeService(EdgeNodeRepository repository) {
+    public EdgeNodeService(EdgeNodeRepository repository, ResourceMetricRepository metricRepository) {
         this.repository = repository;
+        this.metricRepository = metricRepository;
     }
 
     public List<EdgeNode> findAll(NodeStatus status) {
@@ -67,6 +70,7 @@ public class EdgeNodeService {
         if (!repository.existsById(id)) {
             return false;
         }
+        metricRepository.deleteByNode_Id(id);
         repository.deleteById(id);
         return true;
     }
